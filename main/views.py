@@ -134,6 +134,8 @@ def log_user_query(request):
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)})
 
-class FAQViewSet(viewsets.ModelViewSet):
-    queryset = FAQ.objects.all()
-    serializer_class = FAQSerializer
+@api_view(['GET'])
+def faq_list(request):
+    faqs = FAQ.objects.all()
+    serializer = FAQSerializer(faqs, many=True)
+    return Response(serializer.data)
