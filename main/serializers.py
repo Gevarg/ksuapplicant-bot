@@ -7,8 +7,6 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class FAQSerializer(serializers.ModelSerializer):
-    category = CategorySerializer()
-
     class Meta:
         model = FAQ
         fields = '__all__'
