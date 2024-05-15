@@ -8,8 +8,6 @@ class Category(models.Model):
 class FAQ(models.Model):
     question = models.CharField(max_length=500)
     answer = models.TextField()
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='faqs')
-
     def __str__(self):
         return self.question
 
