@@ -4,7 +4,6 @@ from rest_framework import routers
 from main import views
 
 router = routers.DefaultRouter()
-router.register(r'faqs', views.FAQViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
@@ -12,4 +11,6 @@ urlpatterns = [
     path('api/classify_question/', views.classify_question, name='classify_question'),
     path('api/log_user_query/', views.log_user_query, name='log_user_query'),
     path('api/get_answer/', views.get_answer, name='get_answer'),
+    path('api/faq_list/', views.faq_list, name='faq_list'),
+
 ]
