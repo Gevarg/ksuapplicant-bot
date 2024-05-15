@@ -27,19 +27,20 @@ async def handle_message(update: Update, context: CallbackContext):
 
     response = requests.post('http://127.0.0.1:8000/api/classify_question/', data={'question': question})
     result = response.json()
-    category = result.get('category', 'unknown')  # Получите категорию
 
+    category = result.get('category', 'unknown')  # Получите категорию
     response = requests.post('http://127.0.0.1:8000/api/get_answer/',
                              data={'question': question, 'category': category})
     result = response.json()
+    print(result)
     message = result.get('answer', 'Извините, я не нашел ответа на ваш вопрос.')
 
     #  Отправка ответа с кнопками
-    keyboard = [
-        [KeyboardButton("👍 Помогло"), KeyboardButton("👎 Не помогло")]
-    ]
-    reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True, one_time_keyboard=True)
-    await update.message.reply_text(message, reply_markup=reply_markup)
+    # keyboard = [
+    #     [KeyboardButton("👍 Помогло"), KeyboardButton("👎 Не помогло")]
+    # ]
+    # reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True, one_time_keyboard=True)
+    await update.message.reply_text(message)
 
     log_data = {
         'query': question,
