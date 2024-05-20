@@ -11,6 +11,12 @@ class FAQ(models.Model):
     def __str__(self):
         return self.question
 
+class UsefulLinks(models.Model):
+    name = models.CharField(max_length=500)
+    link = models.TextField()
+    def __str__(self):
+        return self.name
+
 class Tag(models.Model):
     name = models.CharField(max_length=50, unique=True)
 
@@ -30,4 +36,4 @@ class Answer(models.Model):
     answer = models.TextField()
 
     def __str__(self):
-        return f"Категория '{self.category.name}'"
+        return f"{self.answer}"

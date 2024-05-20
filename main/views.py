@@ -9,8 +9,8 @@ from rest_framework import serializers, viewsets, status
 from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
 
-from .serializers import FAQSerializer
-from .models import Category, Tag, UserQueryLog, FAQ, Answer
+from .serializers import FAQSerializer, UsefulLinksSerializer
+from .models import Category, Tag, UserQueryLog, FAQ, Answer, UsefulLinks
 
 from natasha import Segmenter, MorphVocab, NewsEmbedding, NewsMorphTagger, Doc
 import nltk
@@ -138,4 +138,10 @@ def log_user_query(request):
 def faq_list(request):
     faqs = FAQ.objects.all()
     serializer = FAQSerializer(faqs, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def useful_list(request):
+    links = UsefulLinks.objects.all()
+    serializer = UsefulLinksSerializer(links, many=True)
     return Response(serializer.data)
