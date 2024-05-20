@@ -71,11 +71,19 @@ async def faq(update: Update, context: CallbackContext) -> None:
     await update.message.reply_text(f"__*Часто задаваемые вопросы:*__\n\n\n{faq_texts}", parse_mode=ParseMode.MARKDOWN)
 
 
+async def useful_links(update: Update, context: CallbackContext) -> None:
+    response = requests.get('http://127.0.0.1:8000/api/useful_list/')
+    links_data = response.json()
+    links_texts = "\n".join([f" __*{i + 1}. {item['name']}*__ \n{item['link']}\n" for i, item in enumerate(links_data)])
+    await update.message.reply_text(f"__*Полезные ссылки:*__\n\n\n{links_texts}", parse_mode=ParseMode.MARKDOWN)
+
+
+
 def main():
     application = Application.builder().token("7148428054:AAGf47FlSRTF6SvsUgJ5hl3voPzRPIvBQUA").build()
 
     application.add_handler(CommandHandler("start", start))
-    # application.add_handler(MessageHandler(filters.Regex('^(🔗 Полезные ссылки)$'), useful_links))
+    application.add_handler(MessageHandler(filters.Regex('^(🔗 Полезные ссылки)$'), useful_links))
     application.add_handler(MessageHandler(filters.Regex('^(❓ Часто задаваемые вопросы)$'), faq))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
     application.add_handler(MessageHandler(filters.Regex('^(👍 Помогло)$'), handle_helpful_button))
