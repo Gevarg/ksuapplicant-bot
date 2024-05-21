@@ -19,7 +19,7 @@ async def start(update: Update, context: CallbackContext) -> None:
         [KeyboardButton("❓ Часто задаваемые вопросы")]
     ]
     reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True, one_time_keyboard=False)
-    await update.message.reply_text("Привет! Напиши мне свой вопрос, и я постараюсь на него ответить.", reply_markup=reply_markup)
+    await update.message.reply_text("Привет! Напиши мне свой вопрос, и я постараюсь на него ответить. ", reply_markup=reply_markup)
 
 
 async def handle_message(update: Update, context: CallbackContext):
@@ -67,14 +67,34 @@ async def handle_not_helpful_button(update: Update, context: CallbackContext):
 async def faq(update: Update, context: CallbackContext) -> None:
     response = requests.get('http://127.0.0.1:8000/api/faq_list/')
     faq_data = response.json()
-    faq_texts = "\n\n".join([f" __*{i + 1}. {item['question']}*__ \n\n{item['answer']}\n" for i, item in enumerate(faq_data)])
-    await update.message.reply_text(f"__*Часто задаваемые вопросы:*__\n\n\n{faq_texts}", parse_mode=ParseMode.MARKDOWN)
 
+    max_message_length = 4096  # Максимальная длина сообщения в Telegram
+    current_message = "__*Часто задаваемые вопросы:*__\n\n"  # Текст текущего сообщения, которое собирается
+
+    for i, item in enumerate(faq_data):
+        # Форматируем вопрос и ответ для отправки
+        formatted_question = f" __*{i + 1}. {item['question']}*__ \n\n"
+        formatted_answer = f"{item['answer']}\n\n\n"
+
+        # Проверяем, не превысит ли добавление вопроса и ответа лимит длины сообщения
+        if len(current_message) + len(formatted_question) + len(formatted_answer) > max_message_length:
+            # Отправляем текущее сообщение
+            await update.message.reply_text(current_message, parse_mode=ParseMode.MARKDOWN)
+            # Начинаем новое сообщение с вопроса и ответа
+            current_message = formatted_question + formatted_answer
+        else:
+            # Добавляем вопрос и ответ к текущему сообщению
+            current_message += formatted_question + formatted_answer
+
+    # Отправляем оставшийся текст в текущем сообщении, если он есть
+    if current_message:
+        await update.message.reply_text(current_message, parse_mode=ParseMode.MARKDOWN)
 
 async def useful_links(update: Update, context: CallbackContext) -> None:
     response = requests.get('http://127.0.0.1:8000/api/useful_list/')
     links_data = response.json()
-    links_texts = "\n".join([f" __*{i + 1}. {item['name']}*__ \n{item['link']}\n" for i, item in enumerate(links_data)])
+    links_texts = "\n".join([f" {i + 1}. {item['name']} \n{item['link']}\n" for i, item in enumerate(links_data)])
+    print(f'{links_texts}')
     await update.message.reply_text(f"__*Полезные ссылки:*__\n\n\n{links_texts}", parse_mode=ParseMode.MARKDOWN)
 
 
