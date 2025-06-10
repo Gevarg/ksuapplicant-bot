@@ -100,7 +100,7 @@ async def useful_links(update: Update, context: CallbackContext) -> None:
 
 
 def main():
-    application = Application.builder().token("7148428054:AAGf47FlSRTF6SvsUgJ5hl3voPzRPIvBQUA").build()
+    application = Application.builder().token("///").build()
 
     application.add_handler(CommandHandler("start", start))
     application.add_handler(MessageHandler(filters.Regex('^(🔗 Полезные ссылки)$'), useful_links))
